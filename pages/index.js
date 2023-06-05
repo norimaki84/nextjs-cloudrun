@@ -4,7 +4,7 @@ import {useEffect} from "react";
 
 export default function Home() {
   useEffect(()=>{
-    console.log('Cloud Run Test04');
+    console.log('Cloud Run Test05');
   }, [])
   return (
     <div className={styles.container}>
@@ -15,7 +15,7 @@ export default function Home() {
 
       <main className={styles.main}>
         <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js</a> on Docker!
+          Welcome to <a href="https://nextjs.org">Next.js</a> on Cloud Run Test!!!
         </h1>
 
         <p className={styles.description}>
