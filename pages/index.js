@@ -4,7 +4,7 @@ import {useEffect} from "react";
 
 export default function Home() {
   useEffect(()=>{
-    console.log('Cloud Run Test');
+    console.log('Cloud Run Test02');
   }, [])
   return (
     <div className={styles.container}>
