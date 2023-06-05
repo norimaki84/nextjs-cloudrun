@@ -1,11 +1,37 @@
 import Head from 'next/head'
 import styles from '../styles/Home.module.css'
 import {useEffect} from "react";
+import {useRouter} from "next/router";
+// import { GetServerSideProps } from 'next';
 
-export default function Home() {
+import { createClient } from 'microcms-js-sdk'
+import Link from "next/link";
+
+export const client = createClient({
+  // serviceDomain: process.env.SERVICE_DOMAIN || "",
+  serviceDomain: 'ca3rjspzbg',
+  // apiKey: process.env.API_KEY || "",
+  apiKey: 'b5feddac91fd497793d6cf912ddcf60e94e8',
+})
+
+export default function Home({post}) {
+  const router = useRouter()
+  const { asPath } = useRouter()
+
   useEffect(()=>{
-    console.log('Cloud Run Test05');
+    console.log('Cloud Run Test05', post);
   }, [])
+
+  /**
+   * 言語切り替え処理
+   * @param locale
+   */
+  const handleLocaleChange = async (locale) => {
+    await router.push(router.pathname, router.asPath, { locale, scroll: false })
+    window.location.reload()
+  }
+
+
   return (
     <div className={styles.container}>
       <Head>
@@ -18,6 +44,31 @@ export default function Home() {
           Welcome to <a href="https://nextjs.org">Next.js</a> on Cloud Run Test!!!
         </h1>
 
+
+        <div>
+          <button
+              onClick={() => handleLocaleChange('ja')}
+              type={'button'}
+          >
+            JP
+          </button>
+          <div>/</div>
+          <button
+              onClick={() => handleLocaleChange('en')}
+              type={'button'}
+          >
+            EN
+          </button>
+        </div>
+        <ul>
+          {post && post.map((articleBlocksData, i) => (
+              <li key={i}>
+                <Link href={'/works/' + articleBlocksData.id} legacyBehavior>
+                  <a>{articleBlocksData.title?.title_ja}</a>
+                </Link>
+              </li>
+          ))}
+        </ul>
         <p className={styles.description}>
           Get started by editing{' '}
           <code className={styles.code}>pages/index.js</code>
@@ -68,4 +119,27 @@ export default function Home() {
       </footer>
     </div>
   )
+}
+
+export const getServerSideProps = async (context) => {
+  // データを取得する処理
+  try {
+    let post
+
+    const res = await client.get({
+      endpoint: 'works',
+      queries: { limit: 3, orders: '-publishedAt'},
+    })
+    post = await res.contents
+
+    return {
+      // 取得したデータをpropsにセットする
+      props: { post },
+    }
+  } catch (err) {
+    console.error(err)
+    return {
+      props: {},
+    }
+  }
 }
