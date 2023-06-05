@@ -1,7 +1,11 @@
 import Head from 'next/head'
 import styles from '../styles/Home.module.css'
+import {useEffect} from "react";
 
 export default function Home() {
+  useEffect(()=>{
+    console.log('Cloud Run テスト');
+  }, [])
   return (
     <div className={styles.container}>
       <Head>
